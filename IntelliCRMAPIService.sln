@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntelliCRMAPIService", "IntelliCRMAPIService.csproj", "{A5C26835-A626-4D81-BC42-8B164DAF18C5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A5C26835-A626-4D81-BC42-8B164DAF18C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5C26835-A626-4D81-BC42-8B164DAF18C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5C26835-A626-4D81-BC42-8B164DAF18C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5C26835-A626-4D81-BC42-8B164DAF18C5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {37C1F0F3-F2CB-48E8-8845-D7CE1DDC8DBC}
+	EndGlobalSection
+EndGlobal
