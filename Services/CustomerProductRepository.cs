@@ -3,10 +3,10 @@ using IntelliCRMAPIService.Repository;
 
 namespace IntelliCRMAPIService.Services
 {
-    public class CustomerProduct : RepositoryBase<Users>, IUserRepository
+    public class CustomerProductRepository : RepositoryBase<Customerproduct>, ICustomerProductRepository
     {
         private readonly PostgresDBContext _applicationDBContext;
-        public CustomerProduct(PostgresDBContext applicationDBContext)
+        public CustomerProductRepository(PostgresDBContext applicationDBContext)
             :base(applicationDBContext)
         {
             _applicationDBContext = applicationDBContext;

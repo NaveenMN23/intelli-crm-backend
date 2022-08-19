@@ -36,11 +36,13 @@ namespace IntelliCRMAPIService.BL
                             //Add rows to DataTable.
                             dt.Rows.Add();
                             int i = 0;
-
-                            foreach (IXLCell cell in row.Cells(row.FirstCellUsed().Address.ColumnNumber, row.LastCellUsed().Address.ColumnNumber))
+                            if (row.FirstCellUsed() != null)
                             {
-                                dt.Rows[dt.Rows.Count - 1][i] = cell.Value.ToString();
-                                i++;
+                                foreach (IXLCell cell in row.Cells(row.FirstCellUsed().Address.ColumnNumber, row.LastCellUsed().Address.ColumnNumber))
+                                {
+                                    dt.Rows[dt.Rows.Count - 1][i] = cell.Value.ToString();
+                                    i++;
+                                }
                             }
                         }
                     }
@@ -48,7 +50,7 @@ namespace IntelliCRMAPIService.BL
             }
             catch (Exception ex)
             {
-
+                return dt;
             }
 
             return dt;

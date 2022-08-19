@@ -4,7 +4,7 @@ using IntelliCRMAPIService.DBContext;
 
 namespace IntelliCRMAPIService.Repository
 {
-    public interface ICustomerProduct : IRepositoryBase<Users>
+    public interface ICustomerProductRepository : IRepositoryBase<Customerproduct>
     {
 
     }

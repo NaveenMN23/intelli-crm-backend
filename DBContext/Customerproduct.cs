@@ -14,9 +14,9 @@ namespace IntelliCRMAPIService
         public string Productprice { get; set; }
         public string Qtyassign { get; set; }
         public string Createdby { get; set; }
-        public DateOnly? Createddate { get; set; }
+        public DateTime? Createddate { get; set; }
         public string Modifiedby { get; set; }
-        public DateOnly? Modifieddate { get; set; }
+        public DateTime? Modifieddate { get; set; }
 
         public virtual Users UseridfkNavigation { get; set; }
     }

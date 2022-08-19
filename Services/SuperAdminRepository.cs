@@ -1,9 +1,10 @@
-﻿using ClosedXML.Excel;
-using IntelliCRMAPIService.Attribute;
+﻿using IntelliCRMAPIService.Attribute;
+using IntelliCRMAPIService.BL;
 using IntelliCRMAPIService.DBContext;
 using IntelliCRMAPIService.Model;
 using IntelliCRMAPIService.Repository;
 using System.Data;
+using System.Linq;
 
 namespace IntelliCRMAPIService.Services
 {
@@ -12,17 +13,63 @@ namespace IntelliCRMAPIService.Services
         private readonly IUserDetailsRepository _userDetailsRepository;
         private readonly IUserRepository _userRepository;
         private readonly PostgresDBContext _applicationDBContext;
+        private readonly ExcelConverter _excelConverter;
+        private readonly ICustomerProductRepository _customerProductRepository;
 
-        public SuperAdminRepository(IUserDetailsRepository userDetailsRepository, IUserRepository userRepository, PostgresDBContext applicationDBContext)
+        public SuperAdminRepository(IUserDetailsRepository userDetailsRepository, IUserRepository userRepository, PostgresDBContext applicationDBContext,
+            ExcelConverter excelConverter, ICustomerProductRepository customerProductRepository)
         {
             _userDetailsRepository = userDetailsRepository;
             _userRepository = userRepository;
             _applicationDBContext = applicationDBContext;
+            _excelConverter = excelConverter;
+            _customerProductRepository = customerProductRepository;
         }
         public async Task<bool> CreateCustomer(UserResponse userResponse)
         {
-            return await SaveUserDetails(userResponse);
+            var result = await SaveUserDetails(userResponse);
 
+            if(result && userResponse.UploadFile !=null)
+            {
+                var productTable = await _excelConverter.ConvertToDataTable(userResponse.UploadFile.OpenReadStream());
+
+                foreach (DataRow row in productTable.Rows)
+                {
+                    var values = row.ItemArray;
+
+                    if (Convert.ToString(values[1]) == "")
+                        continue;
+
+                    var customerproduct = new Customerproduct()
+                    {
+                        Productid = Convert.ToInt32(values[0]),
+                        Productname = Convert.ToString(values[1]),
+                        Productprice = Convert.ToString(values[2]),
+                        Qtyassign = Convert.ToString(values[3]),
+                        Useridfk = userResponse.UserId
+                    };
+
+                    var existingCust = _customerProductRepository.FindByCondition(e => e.Useridfk == userResponse.UserId && e.Productid == customerproduct.Productid).FirstOrDefault();
+                    if (existingCust != null && existingCust != default)
+                    {
+                        existingCust.Productprice = customerproduct.Productprice;
+                        existingCust.Qtyassign = customerproduct.Qtyassign;
+                        existingCust.Modifiedby = userResponse.RequestedBy;
+                        existingCust.Modifieddate = DateTime.Now;
+                        _customerProductRepository.Update(existingCust);
+                    }
+                    else
+                    {
+                        customerproduct.Createdby = userResponse.RequestedBy;
+                        customerproduct.Createddate = DateTime.Now;
+                        _customerProductRepository.Create(customerproduct);
+                    }
+
+                }
+                
+            }
+
+            return result;
         }
 
         public async Task<bool> CreateSubAdmin(SubAdminResponse userResponse)

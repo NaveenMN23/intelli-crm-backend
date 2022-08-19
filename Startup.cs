@@ -106,6 +106,8 @@ namespace IntelliCRMAPIService
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<ISuperAdminRepository, SuperAdminRepository>();
             services.AddTransient<ISuperAdminBL, SuperAdminBL>();
+            services.AddTransient<ICustomerProductRepository, CustomerProductRepository>();
+            services.AddTransient<ExcelConverter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
