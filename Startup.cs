@@ -58,10 +58,12 @@ namespace IntelliCRMAPIService
             //services.AddDbContext<ApplicationDBContext>(options =>
             //    options.UseSqlServer(connectionString));
 
-            services.AddDbContext<ApplicationDBContext>(options =>
-                options.UseSqlServer(connectionString));
+            //services.AddDbContext<ApplicationDBContext>(options =>
+            //    options.UseSqlServer(connectionString));
 
-            services.AddDbContext<postgresContext>(options =>
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
+            services.AddDbContext<PostgresDBContext>(options =>
                 options.UseNpgsql(connectionStringPostgres));
 
             services.AddControllers();

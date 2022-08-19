@@ -39,11 +39,11 @@ namespace IntelliCRMAPIService.BL
             }
         }
 
-        public async Task<UserResponse> GetCustomer(int userID)
+        public async Task<UserResponse> GetCustomer(string email)
         {
             try
             {
-                var result = await _superAdminRepository.GetCustomer(userID);
+                var result = await _superAdminRepository.GetCustomer(email);
                 return result;
             }
             catch (Exception ex)
@@ -52,11 +52,11 @@ namespace IntelliCRMAPIService.BL
             }
         }
 
-        public async Task<UserResponse> GetSubAdmin(int userID)
+        public async Task<UserResponse> GetSubAdmin(string email)
         {
             try
             {
-                var result = await _superAdminRepository.GetSubAdmin(userID);
+                var result = await _superAdminRepository.GetSubAdmin(email);
                 return result;
             }
             catch (Exception ex)

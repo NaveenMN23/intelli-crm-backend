@@ -11,9 +11,9 @@ namespace IntelliCRMAPIService.Services
     {
         private readonly IUserDetailsRepository _userDetailsRepository;
         private readonly IUserRepository _userRepository;
-        private readonly ApplicationDBContext _applicationDBContext;
+        private readonly PostgresDBContext _applicationDBContext;
 
-        public SuperAdminRepository(IUserDetailsRepository userDetailsRepository, IUserRepository userRepository, ApplicationDBContext applicationDBContext)
+        public SuperAdminRepository(IUserDetailsRepository userDetailsRepository, IUserRepository userRepository, PostgresDBContext applicationDBContext)
         {
             _userDetailsRepository = userDetailsRepository;
             _userRepository = userRepository;
@@ -30,79 +30,79 @@ namespace IntelliCRMAPIService.Services
             return await SaveSubAdminDetails(userResponse);
         }
 
-        public async Task<UserResponse> GetCustomer(int userID)
+        public async Task<UserResponse> GetCustomer(string email)
         {
-            return await GetUserDetails(userID);
+            return await GetUserDetails(email);
         }
 
-        public async Task<UserResponse> GetSubAdmin(int userID)
+        public async Task<UserResponse> GetSubAdmin(string email)
         {
-            return await GetUserDetails(userID);
+            return await GetUserDetails(email);
         }
 
         private async Task<bool> SaveUserDetails(UserResponse userResponse)
         {
-            var checkExistinguser = _userRepository.FindByCondition(e => e.UserId == userResponse.UserId).FirstOrDefault();
+            var checkExistinguser = _userRepository.FindByCondition(e => e.Email == userResponse.Email).FirstOrDefault();
             int userId;
 
             if (checkExistinguser == null)
             {
                 var customer = new Users()
                 {
-                    AccountStatus = userResponse.AccountStatus.ToLower() == "active" ? 1 : 0,
-                    ContactNumber = userResponse.ContactNumber,
+                    Accountstatus = userResponse.AccountStatus.ToLower() == "active" ? 1 : 0,
+                    Contactnumber = userResponse.ContactNumber,
                     Email = userResponse.Email,
-                    FirstName = userResponse.FirstName,
-                    LastName = userResponse.LastName,
+                    Firstname = userResponse.FirstName,
+                    Lastname = userResponse.LastName,
                     Password = userResponse.Password,
                     Salt = userResponse.Salt,
-                    AccountType = userResponse.AccountType,
-                    RightsForCustomerAccount = userResponse.RightsForCustomerAccount,
-                    CreatedBy = userResponse.RequestedBy,
-                    CreatedDate = DateTime.Now,
+                    Accounttype = userResponse.AccountType,
+                    Rightsforcustomeraccount = userResponse.RightsForCustomerAccount,
+                    Createdby = userResponse.RequestedBy,
+                    Createddate = DateTime.Now,
                     Role = (Role)Enum.Parse(typeof(Role), userResponse.Role),
-                    RoleName = userResponse.Role
+                    Rolename = userResponse.Role
 
                 };
                 var user = _userRepository.Create(customer);
-                userId = user.UserId;
+                userId = user.Userid;
             }
             else
-            {
-                checkExistinguser.AccountStatus = userResponse.AccountStatus.ToLower() == "active" ? 1 : 0;
-                checkExistinguser.ContactNumber = userResponse.ContactNumber;
+                {
+                checkExistinguser.Accountstatus = userResponse.AccountStatus.ToLower() == "active" ? 1 : 0;
+                checkExistinguser.Contactnumber = userResponse.ContactNumber;
                 checkExistinguser.Email = userResponse.Email;
-                checkExistinguser.FirstName = userResponse.FirstName;
+                checkExistinguser.Firstname = userResponse.FirstName;
                 checkExistinguser.Salt = userResponse.Salt;
-                checkExistinguser.LastName = userResponse.LastName;
+                checkExistinguser.Lastname = userResponse.LastName;
                 //checkExistinguser.Password = userResponse.Password;
-                checkExistinguser.AccountType = userResponse.AccountType;
-                checkExistinguser.RightsForCustomerAccount = userResponse.RightsForCustomerAccount;
-                checkExistinguser.ModifiedDate = DateTime.Now;
-                checkExistinguser.ModifiedBy = userResponse.RequestedBy;
+                checkExistinguser.Accounttype = userResponse.AccountType;
+                checkExistinguser.Rightsforcustomeraccount = userResponse.RightsForCustomerAccount;
+                checkExistinguser.Modifieddate = DateTime.Now;
+                checkExistinguser.Modifiedby = userResponse.RequestedBy;
 
                 checkExistinguser.Role = (Role)Enum.Parse(typeof(Role), userResponse.Role);
                 _userRepository.Update(checkExistinguser);
 
-                userId = checkExistinguser.UserId;
+                userId = checkExistinguser.Userid;
             }
 
-            var checkExistinguserdetails = _userDetailsRepository.FindByCondition(e => e.UserId_Fk == userResponse.UserId).FirstOrDefault();
+            var checkExistinguserdetails = _userDetailsRepository.FindByCondition(e => e.UseridFk == userId).FirstOrDefault();
 
             if (checkExistinguserdetails == null)
             {
 
-                var customerDetails = new UserDetails()
+                var customerDetails = new Userdetails()
                 {
                     Address = userResponse.Address,
                     City = userResponse.City,
                     Coutry = userResponse.Country,
-                    CreatedDate = DateTime.Now,
-                    CreatedBy = userResponse.RequestedBy,
-                    CreditLimit = userResponse.CreditLimit,
-                    SoareceviedAmount = userResponse.SoareceviedAmount,
+                    Createddate = DateTime.Now,
+                    Createdby = userResponse.RequestedBy,
+                    Creditlimit = userResponse.CreditLimit,
+                    Soareceviedamount = userResponse.SoareceviedAmount,
                     State = userResponse.State,
-                    UserId_Fk = userId
+                    UseridFk = userId
                 };
 
                 _userDetailsRepository.Create(customerDetails);
@@ -112,11 +112,11 @@ namespace IntelliCRMAPIService.Services
                 checkExistinguserdetails.Address = userResponse.Address;
                 checkExistinguserdetails.City = userResponse.City;
                 checkExistinguserdetails.Coutry = userResponse.Country;
-                checkExistinguserdetails.CreditLimit = userResponse.CreditLimit;
-                checkExistinguserdetails.SoareceviedAmount = userResponse.SoareceviedAmount;
+                checkExistinguserdetails.Creditlimit = userResponse.CreditLimit;
+                checkExistinguserdetails.Soareceviedamount = userResponse.SoareceviedAmount;
                 checkExistinguserdetails.State = userResponse.State;
-                checkExistinguserdetails.ModifiedDate = DateTime.Now;
-                checkExistinguserdetails.ModifiedBy = userResponse.RequestedBy;
+                checkExistinguserdetails.Modifieddate = DateTime.Now;
+                checkExistinguserdetails.Modifiedby = userResponse.RequestedBy;
 
                 _userDetailsRepository.Update(checkExistinguserdetails);
             }
@@ -125,74 +125,75 @@ namespace IntelliCRMAPIService.Services
         }
         private async Task<bool> SaveSubAdminDetails(SubAdminResponse userResponse)
         {
-            var checkExistinguser = _userRepository.FindByCondition(e => e.UserId == userResponse.UserId).FirstOrDefault();
+            var checkExistinguser = _userRepository.FindByCondition(e => e.Email == userResponse.Email).FirstOrDefault();
             int userId;
 
             if (checkExistinguser == null)
             {
                 var customer = new Users()
                 {
-                    AccountStatus = userResponse?.AccountStatus.ToLower() == "active" ? 1 : 0,
-                    ContactNumber = userResponse.ContactNumber,
+                    Accountstatus = userResponse?.AccountStatus.ToLower() == "active" ? 1 : 0,
+                    Contactnumber = userResponse.ContactNumber,
                     Email = userResponse.Email,
-                    FirstName = userResponse.FirstName,
-                    LastName = userResponse.LastName,
+                    Firstname = userResponse.FirstName,
+                    Lastname = userResponse.LastName,
                     Password = userResponse.Password,
                     Salt = userResponse.Salt,
-                    AccountType = userResponse.AccountType,
-                    RightsForCustomerAccount = userResponse.RightsForCustomerAccount,
-                    CreatedBy = userResponse.RequestedBy,
-                    CreatedDate = DateTime.Now,
+                    Accounttype = userResponse.AccountType,
+                    Rightsforcustomeraccount = userResponse.RightsForCustomerAccount,
+                    Createdby = userResponse.RequestedBy,
+                    Createddate = DateTime.Now,
                     Role = (Role)Enum.Parse(typeof(Role), userResponse.Role),
-                    RoleName = userResponse.Role
+                    Rolename = userResponse.Role
 
                 };
                 var user = _userRepository.Create(customer);
-                userId = user.UserId;
+                userId = user.Userid;
             }
             else
             {
-                checkExistinguser.AccountStatus = userResponse.AccountStatus.ToLower() == "active" ? 1 : 0;
-                checkExistinguser.ContactNumber = userResponse.ContactNumber;
+                checkExistinguser.Accountstatus = userResponse.AccountStatus.ToLower() == "active" ? 1 : 0;
+                checkExistinguser.Contactnumber = userResponse.ContactNumber;
                 checkExistinguser.Email = userResponse.Email;
-                checkExistinguser.FirstName = userResponse.FirstName;
+                checkExistinguser.Firstname = userResponse.FirstName;
                 checkExistinguser.Salt = userResponse.Salt;
-                checkExistinguser.LastName = userResponse.LastName;
+                checkExistinguser.Lastname = userResponse.LastName;
                 //checkExistinguser.Password = userResponse.Password;
-                checkExistinguser.AccountType = userResponse.AccountType;
-                checkExistinguser.RightsForCustomerAccount = userResponse.RightsForCustomerAccount;
-                checkExistinguser.ModifiedDate = DateTime.Now;
-                checkExistinguser.ModifiedBy = userResponse.RequestedBy;
-                checkExistinguser.RoleName = userResponse.Role;
+                checkExistinguser.Accounttype = userResponse.AccountType;
+                checkExistinguser.Rightsforcustomeraccount = userResponse.RightsForCustomerAccount;
+                checkExistinguser.Modifieddate = DateTime.Now;
+                checkExistinguser.Modifiedby = userResponse.RequestedBy;
+                checkExistinguser.Rolename = userResponse.Role;
 
                 checkExistinguser.Role = (Role)Enum.Parse(typeof(Role), userResponse.Role);
                 _userRepository.Update(checkExistinguser);
 
-                userId = checkExistinguser.UserId;
+                userId = checkExistinguser.Userid;
             }
 
             return true;
         }
-        private async Task<UserResponse> GetUserDetails(int userID)
+        private async Task<UserResponse> GetUserDetails(string email)
         {
-            var checkExistinguserdetails = _userDetailsRepository.FindByCondition(e => e.UserId_Fk == userID).FirstOrDefault();
-            var checkExistinguser = _userRepository.FindByCondition(e => e.UserId == userID).FirstOrDefault();
+            var checkExistinguser = _userRepository.FindByCondition(e => e.Email == email).FirstOrDefault();
+            var checkExistinguserdetails = _userDetailsRepository.FindByCondition(e => e.UseridFk == checkExistinguser.Userid).FirstOrDefault();
+            
 
             var customerResponse = new UserResponse
             {
-                UserId = checkExistinguser.UserId,
-                AccountStatus = checkExistinguser.AccountStatus == 1 ? "Active" :"Hold",
-                ContactNumber = checkExistinguser.ContactNumber,
+                UserId = checkExistinguser.Userid,
+                AccountStatus = checkExistinguser.Accountstatus == 1 ? "Active" :"Hold",
+                ContactNumber = checkExistinguser.Contactnumber,
                 Email = checkExistinguser.Email,
-                FirstName = checkExistinguser.FirstName,
-                LastName = checkExistinguser.LastName,
-                AccountType = checkExistinguser.AccountType,
+                FirstName = checkExistinguser.Firstname,
+                LastName = checkExistinguser.Lastname,
+                AccountType = checkExistinguser.Accounttype,
                 Address = checkExistinguserdetails?.Address,
                 City = checkExistinguserdetails?.City,
                 Country = checkExistinguserdetails?.Coutry,
-                RightsForCustomerAccount = checkExistinguser.RightsForCustomerAccount,
-                CreditLimit = checkExistinguserdetails?.CreditLimit,
-                SoareceviedAmount = checkExistinguserdetails?.SoareceviedAmount,
+                RightsForCustomerAccount = checkExistinguser.Rightsforcustomeraccount,
+                CreditLimit = checkExistinguserdetails?.Creditlimit,
+                SoareceviedAmount = checkExistinguserdetails?.Soareceviedamount,
                 State = checkExistinguserdetails?.State
             };
 
@@ -201,22 +202,22 @@ namespace IntelliCRMAPIService.Services
 
         public async Task<IList<UserResponse>> GetAllUserDetails(int userType)
         {
-           return _applicationDBContext.Users.Where(u => u.AccountType == userType ).Join(_applicationDBContext.UserDetails, i => i.UserId, o => o.UserId_Fk,
+           return _applicationDBContext.Users.Where(u => u.Accounttype == userType ).Join(_applicationDBContext.Userdetails, i => i.Userid, o => o.UseridFk,
                     (i, o) => new UserResponse()
                     {
-                        UserId = i.UserId,
-                        AccountStatus = i.AccountStatus == 1 ? "Active" : "Hold",
-                        ContactNumber = i.ContactNumber,
+                        UserId = i.Userid,
+                        AccountStatus = i.Accountstatus == 1 ? "Active" : "Hold",
+                        ContactNumber = i.Contactnumber,
                         Email = i.Email,
-                        FirstName = i.FirstName,
-                        LastName = i.LastName,
-                        AccountType = i.AccountType,
+                        FirstName = i.Firstname,
+                        LastName = i.Lastname,
+                        AccountType = i.Accounttype,
                         Address = o.Address,
                         City = o.City,
                         Country = o.Coutry,
-                        RightsForCustomerAccount = i.RightsForCustomerAccount,
-                        CreditLimit = o.CreditLimit,
-                        SoareceviedAmount = o.SoareceviedAmount,
+                        RightsForCustomerAccount = i.Rightsforcustomeraccount,
+                        CreditLimit = o.Creditlimit,
+                        SoareceviedAmount = o.Soareceviedamount,
                         State = o.State
                     }
                 ).ToList();
@@ -225,16 +226,16 @@ namespace IntelliCRMAPIService.Services
 
         public async Task<IList<UserResponse>> GetAllSubAdminUserDetails(int userType)
         {
-            return _applicationDBContext.Users.Where(u => u.AccountType == userType).Select( i => new UserResponse()
+            return _applicationDBContext.Users.Where(u => u.Accounttype == userType).Select( i => new UserResponse()
                      {
-                         UserId = i.UserId,
-                         AccountStatus = i.AccountStatus == 1 ? "Active" : "Hold",
-                         ContactNumber = i.ContactNumber,
+                         UserId = i.Userid,
+                         AccountStatus = i.Accountstatus == 1 ? "Active" : "Hold",
+                         ContactNumber = i.Contactnumber,
                          Email = i.Email,
-                         FirstName = i.FirstName,
-                         LastName = i.LastName,
-                         AccountType = i.AccountType,
-                         RightsForCustomerAccount = i.RightsForCustomerAccount,
+                         FirstName = i.Firstname,
+                         LastName = i.Lastname,
+                         AccountType = i.Accounttype,
+                         RightsForCustomerAccount = i.Rightsforcustomeraccount
 
                      }
                  ).ToList();

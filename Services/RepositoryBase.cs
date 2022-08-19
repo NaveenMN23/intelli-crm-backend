@@ -1,5 +1,4 @@
-﻿
-using IntelliCRMAPIService.DBContext;
+﻿using IntelliCRMAPIService.DBContext;
 using IntelliCRMAPIService.Repository;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -8,8 +7,8 @@ namespace IntelliCRMAPIService.Services
 {
     public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {
-        protected ApplicationDBContext ApplicationDBContext { get; set; }
-        public RepositoryBase(ApplicationDBContext repositoryContext)
+        protected PostgresDBContext ApplicationDBContext { get; set; }
+        public RepositoryBase(PostgresDBContext repositoryContext)
         {
             this.ApplicationDBContext = repositoryContext;
         }

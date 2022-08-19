@@ -2,9 +2,8 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.Collections;
 
-namespace IntelliCRMAPIService.Postgres
+namespace IntelliCRMAPIService
 {
     public partial class Userdetails
     {
@@ -16,11 +15,10 @@ namespace IntelliCRMAPIService.Postgres
         public string Coutry { get; set; }
         public double? Creditlimit { get; set; }
         public double? Soareceviedamount { get; set; }
-        public BitArray Uploadfile { get; set; }
         public string Createdby { get; set; }
-        public DateOnly? Createddate { get; set; }
+        public DateTime? Createddate { get; set; }
         public string Modifiedby { get; set; }
-        public DateOnly? Modifieddate { get; set; }
+        public DateTime? Modifieddate { get; set; }
 
         public virtual Users UseridFkNavigation { get; set; }
     }
