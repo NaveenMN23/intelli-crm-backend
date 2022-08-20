@@ -21,7 +21,7 @@ namespace IntelliCRMAPIService.DBContext
         public virtual DbSet<Userdetails> Userdetails { get; set; }
         public virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<Customerproduct> Customerproduct { get; set; }
-
+        public virtual DbSet<Productmaster> Productmaster { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
