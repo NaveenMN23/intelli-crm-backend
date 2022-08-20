@@ -137,11 +137,11 @@ namespace IntelliCRMAPIService
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
 
-            if (env.IsDevelopment())
-            {
+            //if (env.IsDevelopment())
+            //{
                 app.UseSwagger();
                 app.UseSwaggerUI();
-            }
+            //}
 
             //(x => x.SetIsOriginAllowed(origin => origin.Contains("http://localhost:5099"))
             app.UseCors("AllowOrigin");

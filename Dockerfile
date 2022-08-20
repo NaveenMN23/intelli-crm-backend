@@ -6,7 +6,7 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /src
+WORKDIR /IntelliCRMService
 COPY ["IntelliCRMService/IntelliCRMAPIService.csproj", "IntelliCRMService/"]
 RUN dotnet restore "IntelliCRMService/IntelliCRMAPIService.csproj"
 COPY . .
