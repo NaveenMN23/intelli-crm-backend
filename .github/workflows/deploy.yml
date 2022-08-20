@@ -1,4 +1,4 @@
-name:Heroku
+name:Heroku Deployment 
 
 on:
   push:
