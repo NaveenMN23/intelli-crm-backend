@@ -17,7 +17,8 @@ namespace IntelliCRMAPIService.Services
             try
             {
 
-               await _applicationDBContext.AddRangeAsync(productmasters);
+                await _applicationDBContext.Productmaster.AddRangeAsync(productmasters);
+                await _applicationDBContext.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)

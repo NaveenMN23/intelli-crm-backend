@@ -14,17 +14,21 @@ namespace IntelliCRMAPIService
     public class Startup
     {
         public IConfiguration Configuration { get; private set; }
-
-        public Startup(IConfiguration configuration)
+        private IWebHostEnvironment CurrentEnvironment { get; set; }
+        private ILogger<Startup> _logger;
+        public Startup(IConfiguration configuration, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             Configuration = configuration;
+            CurrentEnvironment = env;
+            _logger = logger;
         }
 
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services, IWebHostEnvironment env)
+        public void ConfigureServices(IServiceCollection services)
         {
+            _logger.LogError("ConfigureServices");
             services.AddCors(options =>
             {
                 options.AddPolicy(name: "AllowOrigin",
@@ -55,8 +59,9 @@ namespace IntelliCRMAPIService
             var connectionString = Configuration.GetConnectionString("IntelliCRMDb");
             var connectionStringPostgres = Configuration.GetConnectionString("WebApiDatabase");
 
-            if (!env.IsDevelopment())
+            if (!CurrentEnvironment.IsDevelopment())
             {
+                _logger.LogError($"ConfigureServices env--{Environment.GetEnvironmentVariable("DATABASE_URL")}");
                 var connectionUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
                 connectionUrl = connectionUrl.Replace("postgres://", string.Empty);
@@ -125,6 +130,7 @@ namespace IntelliCRMAPIService
             services.AddTransient<ICustomerProductRepository, CustomerProductRepository>();
             services.AddTransient<ExcelConverter>();
             services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<IProductBL, ProductBL>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

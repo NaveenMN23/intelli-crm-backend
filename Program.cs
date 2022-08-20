@@ -13,7 +13,7 @@ namespace IntelliCRMAPIService
             }
             catch (Exception ex)
             {
-                logger.Error(ex.Message);
+                logger.Error($"Error occurred--{ex.Message}");
             }
             finally
             {

@@ -2,12 +2,14 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IntelliCRMAPIService
 {
     public partial class Productmaster
     {
+        [Key]
         public int Productid { get; set; }
         public string Category { get; set; }
         public string Equsbrandname { get; set; }
