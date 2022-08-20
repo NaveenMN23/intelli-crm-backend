@@ -1,4 +1,5 @@
 ﻿using IntelliCRMAPIService.AuthModels;
+using IntelliCRMAPIService.DBContext;
 
 namespace IntelliCRMAPIService.Repository
 {

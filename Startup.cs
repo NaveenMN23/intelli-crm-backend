@@ -23,7 +23,7 @@ namespace IntelliCRMAPIService
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services, IWebHostEnvironment env)
         {
             services.AddCors(options =>
             {
@@ -55,13 +55,31 @@ namespace IntelliCRMAPIService
             var connectionString = Configuration.GetConnectionString("IntelliCRMDb");
             var connectionStringPostgres = Configuration.GetConnectionString("WebApiDatabase");
 
+            if (!env.IsDevelopment())
+            {
+                var connectionUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+
+                connectionUrl = connectionUrl.Replace("postgres://", string.Empty);
+                var userPassSide = connectionUrl.Split("@")[0];
+                var hostSide = connectionUrl.Split("@")[1];
+
+                var user = userPassSide.Split(":")[0];
+                var password = userPassSide.Split(":")[1];
+                var host = hostSide.Split("/")[0];
+                var database = hostSide.Split("/")[1].Split("?")[0];
+
+                connectionStringPostgres = $"Host={host};Database={database};Username={user};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+
+            }
             //services.AddDbContext<ApplicationDBContext>(options =>
             //    options.UseSqlServer(connectionString));
 
-            services.AddDbContext<ApplicationDBContext>(options =>
-                options.UseSqlServer(connectionString));
+            //services.AddDbContext<ApplicationDBContext>(options =>
+            //    options.UseSqlServer(connectionString));
 
-            services.AddDbContext<postgresContext>(options =>
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
+            services.AddDbContext<PostgresDBContext>(options =>
                 options.UseNpgsql(connectionStringPostgres));
 
             services.AddControllers();
@@ -104,6 +122,9 @@ namespace IntelliCRMAPIService
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<ISuperAdminRepository, SuperAdminRepository>();
             services.AddTransient<ISuperAdminBL, SuperAdminBL>();
+            services.AddTransient<ICustomerProductRepository, CustomerProductRepository>();
+            services.AddTransient<ExcelConverter>();
+            services.AddTransient<IProductRepository, ProductRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

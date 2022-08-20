@@ -37,19 +37,19 @@ namespace IntelliCRMAPIService.Controllers
         }
 
         [HttpGet]
-        [Route("GetCustomerDetails/{customerId}")]
-        public async Task<UserResponse> GetCustomerDetails(int customerId)
+        [Route("GetCustomerDetails")]
+        public async Task<UserResponse> GetCustomerDetails([FromQuery]string email)
         {
-            var result = await _superAdminBL.GetCustomer(customerId);
+            var result = await _superAdminBL.GetCustomer(email);
 
             return result;
         }
 
         [HttpGet]
-        [Route("GetSubAdminDetails/{customerId}")]
-        public async Task<UserResponse> GetSubAdminDetails(int customerId)
+        [Route("GetSubAdminDetails")]
+        public async Task<UserResponse> GetSubAdminDetails([FromQuery] string email)
         {
-            var result = await _superAdminBL.GetSubAdmin(customerId);
+            var result = await _superAdminBL.GetSubAdmin(email);
 
             return result;
         }

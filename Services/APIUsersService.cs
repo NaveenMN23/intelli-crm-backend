@@ -10,22 +10,16 @@ namespace IntelliCRMAPIService.Services
 {
     public class APIUsersService : IAPIUsersRepository
     {
-        private readonly postgresContext _postgresContext;
-        protected ApplicationDBContext _applicationDBContext { get; set; }
+        protected PostgresDBContext _applicationDBContext { get; set; }
         private DbContext _dbContext { get; set; }
-        public APIUsersService(ApplicationDBContext repositoryContext, postgresContext postgresContext)
+        public APIUsersService(PostgresDBContext repositoryContext)
         {
             _applicationDBContext = repositoryContext;
-            _postgresContext = postgresContext;
         }
 
         public Task<Users> ValidUser(AuthUser authUser)
         {
-            var result = new Users();
-            if(1>3)
-                result = _applicationDBContext.Users.SingleOrDefault(a => a.Email == authUser.Username );
-            else
-                result = _postgresContext.users.SingleOrDefault(a => a.Email == authUser.Username );
+            var result = _applicationDBContext.Users.SingleOrDefault(a => a.Email == authUser.Username );
 
             if (result == null || result == default)
                 return Task.FromResult<Users>(default);
